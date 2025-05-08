@@ -1,37 +1,34 @@
 # -*- coding: utf-8 -*-
 """
-    sphinxcontrib.domaintools
-    =========================
+sphinxcontrib.domaintools
+=========================
 
-    Code is taken from `sphinx.domains.std`_ and is 
-    parameterized for easy domain creation.
+Code is taken from `sphinx.domains.std`_ and is
+parameterized for easy domain creation.
 
-    :copyright: Kay-Uwe (Kiwi) Lorenz, ModuleWorks GmbH
-    :license: BSD, see LICENSE.txt for details
+:copyright: Kay-Uwe (Kiwi) Lorenz, ModuleWorks GmbH
+:license: BSD, see LICENSE.txt for details
 
 
-    sphinx.domains.std
-    ~~~~~~~~~~~~~~~~~~
+sphinx.domains.std
+~~~~~~~~~~~~~~~~~~
 
-    The standard domain.
+The standard domain.
 
-    :copyright: Copyright 2007-2011 by the Sphinx team, see AUTHORS.
-    :license: BSD, see LICENSE for details.
+:copyright: Copyright 2007-2011 by the Sphinx team, see AUTHORS.
+:license: BSD, see LICENSE for details.
 """
 
-import re
-import unicodedata
-
-from docutils import nodes
+from __future__ import annotations
 
 from sphinx import addnodes
 from sphinx.roles import XRefRole
 from sphinx.domains import Domain, ObjType
 from sphinx.directives import ObjectDescription
 from sphinx.util import ws_re
-from sphinx.util.nodes import clean_astext, make_refnode
+from sphinx.util.nodes import make_refnode
 
-from ._version import __version__
+from ._version import __version__ as __version__
 
 
 class GenericObject(ObjectDescription):
@@ -46,11 +43,12 @@ class GenericObject(ObjectDescription):
             domain = 'my-domain-name', indextemplate=(
 
         class MyDescriptionObject(GenericObject):
-    
+
     """
-    indextemplate = ''
+
+    indextemplate = ""
     parse_node = None
-    domain = 'std'
+    domain = "std"
 
     def handle_signature(self, sig, signode):
         if self.parse_node:
@@ -59,25 +57,29 @@ class GenericObject(ObjectDescription):
             signode.clear()
             signode += addnodes.desc_name(sig, sig)
             # normalize whitespace like XRefRole does
-            name = ws_re.sub('', sig)
+            name = ws_re.sub("", sig)
         return name
 
     def add_target_and_index(self, name, sig, signode):
-        targetname = '%s-%s' % (self.objtype, name)
-        signode['ids'].append(targetname)
+        targetname = "%s-%s" % (self.objtype, name)
+        signode["ids"].append(targetname)
         self.state.document.note_explicit_target(signode)
         if self.indextemplate:
-            colon = self.indextemplate.find(':')
+            colon = self.indextemplate.find(":")
             if colon != -1:
                 indextype = self.indextemplate[:colon].strip()
-                indexentry = self.indextemplate[colon+1:].strip() % (name,)
+                indexentry = self.indextemplate[colon + 1 :].strip() % (name,)
             else:
-                indextype = 'single'
+                indextype = "single"
                 indexentry = self.indextemplate % (name,)
-            self.indexnode['entries'].append((indextype, indexentry,
-                                              targetname, '', None))
-        self.env.domaindata[self.domain]['objects'][self.objtype, name] = \
-            self.env.docname, targetname
+            self.indexnode["entries"].append(
+                (indextype, indexentry, targetname, "", None)
+            )
+        self.env.domaindata[self.domain]["objects"][self.objtype, name] = (
+            self.env.docname,
+            targetname,
+        )
+
 
 class CustomDomain(Domain):
     """
@@ -85,57 +87,56 @@ class CustomDomain(Domain):
     via the application interface.
     """
 
-    name = 'std'
-    label = 'Default'
+    name = "std"
+    label = "Default"
 
-    object_types = {
-    }
+    object_types = {}
 
-    directives = {
-    }
-    roles = {
-    }
+    directives = {}
+    roles = {}
 
     initial_data = {
-        'objects': {},      # (type, name) -> docname, labelid
+        "objects": {},  # (type, name) -> docname, labelid
     }
 
-    dangling_warnings = {
-    }
+    dangling_warnings = {}
 
     def clear_doc(self, docname):
-      if 'objects' in self.data:
-       
-        for key, (fn, _) in list(self.data['objects'].items()):
-            if fn == docname:
-                del self.data['objects'][key]
+        if "objects" in self.data:
+            for key, (fn, _) in list(self.data["objects"].items()):
+                if fn == docname:
+                    del self.data["objects"][key]
 
-    def resolve_xref(self, env, fromdocname, builder,
-                     typ, target, node, contnode):
+    def resolve_xref(self, env, fromdocname, builder, typ, target, node, contnode):
         objtypes = self.objtypes_for_role(typ) or []
         for objtype in objtypes:
-            if (objtype, target) in self.data['objects']:
-                docname, labelid = self.data['objects'][objtype, target]
+            if (objtype, target) in self.data["objects"]:
+                docname, labelid = self.data["objects"][objtype, target]
                 break
         else:
-            docname, labelid = '', ''
+            docname, labelid = "", ""
         if not docname:
             return None
-        return make_refnode(builder, fromdocname, docname,
-                            labelid, contnode)
+        return make_refnode(builder, fromdocname, docname, labelid, contnode)
 
     def get_objects(self):
-        for (type, name), info in list(self.data['objects'].items()):
-            yield (name, name, type, info[0], info[1],
-                   self.object_types[type].attrs['searchprio'])
+        for (type, name), info in list(self.data["objects"].items()):
+            yield (
+                name,
+                name,
+                type,
+                info[0],
+                info[1],
+                self.object_types[type].attrs["searchprio"],
+            )
 
     def get_type_name(self, type, primary=False):
         # never prepend "Default"
         return type.lname
 
 
-def custom_domain(class_name, name='', label='', elements = {}):
-    '''create a custom domain
+def custom_domain(class_name, name="", label="", elements={}):
+    """create a custom domain
 
     For each given element there are created a directive and a role
     for referencing and indexing.
@@ -152,8 +153,8 @@ def custom_domain(class_name, name='', label='', elements = {}):
 
         - `role` - role name, defaults to entry's key
 
-        - `indextemplate` - e.g. ``pair: %s; Make Target``, where %s will be 
-          the matched part of your role.  You may leave this empty, defaults 
+        - `indextemplate` - e.g. ``pair: %s; Make Target``, where %s will be
+          the matched part of your role.  You may leave this empty, defaults
           to ``pair: %s; <objname>``
 
         - `parse_node` - a function with signature ``(env, sig, signode)``,
@@ -165,28 +166,36 @@ def custom_domain(class_name, name='', label='', elements = {}):
         - `ref_nodeclass` - class passed as XRefRole's innernodeclass,
           defaults to `None`.
 
-    '''
-    domain_class = type(class_name, (CustomDomain, object), dict(
-        name  = name,
-        label = label,
-    ))
+    """
+    domain_class = type(
+        class_name,
+        (CustomDomain, object),
+        dict(
+            name=name,
+            label=label,
+        ),
+    )
 
-    domain_object_class = \
-        type("%s_Object"%name, (GenericObject, object), dict(domain=name))
+    domain_object_class = type(
+        "%s_Object" % name, (GenericObject, object), dict(domain=name)
+    )
 
-    for n,e in elements.items():
-        obj_name = e.get('objname', n)
-        domain_class.object_types[n] = ObjType(
-            obj_name, e.get('role', n) )
+    for n, e in elements.items():
+        obj_name = e.get("objname", n)
+        domain_class.object_types[n] = ObjType(obj_name, e.get("role", n))
 
-        domain_class.directives[n] = type(n, (domain_object_class, object), dict(
-            indextemplate   = e.get('indextemplate', 'pair: %%s; %s' % obj_name),
-            parse_node      = staticmethod(e.get('parse', None)),
-            doc_field_types = e.get('fields', []),
-            ))
+        domain_class.directives[n] = type(
+            n,
+            (domain_object_class, object),
+            dict(
+                indextemplate=e.get("indextemplate", "pair: %%s; %s" % obj_name),
+                parse_node=staticmethod(e.get("parse", None)),
+                doc_field_types=e.get("fields", []),
+            ),
+        )
 
-        domain_class.roles[e.get('role', n)] = XRefRole(innernodeclass=
-            e.get('ref_nodeclass', None))
+        domain_class.roles[e.get("role", n)] = XRefRole(
+            innernodeclass=e.get("ref_nodeclass", None)
+        )
 
     return domain_class
-

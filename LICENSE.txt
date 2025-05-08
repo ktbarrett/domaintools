@@ -15,8 +15,8 @@ modification, are permitted provided that the following conditions are met:
   notice, this list of conditions and the following disclaimer in the
   documentation and/or other materials provided with the distribution.
 
-* Neither the name of the ModuleWorks GmbH nor the names of its contributors 
-  may be used to endorse or promote products derived from this software 
+* Neither the name of the ModuleWorks GmbH nor the names of its contributors
+  may be used to endorse or promote products derived from this software
   without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
@@ -35,7 +35,7 @@ License for incorporated Software
 =================================
 
 --------------------------------------------------------------------------
-The major part of code of domaintools is taken from `sphinx.domains.std`, 
+The major part of code of domaintools is taken from `sphinx.domains.std`,
 so here is incorporated the license for sphinx itself:
 --------------------------------------------------------------------------
 

@@ -25,7 +25,7 @@ In this example there is created a simple domain for `GNU Make`_::
     def setup(app):
         app.add_domain(custom_domain('GnuMakeDomain',
             name  = 'make',
-            label = "GNU Make", 
+            label = "GNU Make",
 
             elements = dict(
                 target = dict(
@@ -70,8 +70,8 @@ Reference
 
         - `role` - role name, defaults to entry's key
 
-        - `indextemplate` - e.g. ``pair: %s; Make Target``, where %s will be 
-          the matched part of your role.  You may leave this empty, defaults 
+        - `indextemplate` - e.g. ``pair: %s; Make Target``, where %s will be
+          the matched part of your role.  You may leave this empty, defaults
           to ``pair: %s; <objname>``
 
         - `parse_node` - a function with signature ``(env, sig, signode)``,
