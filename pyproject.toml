@@ -1,3 +1,32 @@
 [build-system]
-requires = ["setuptools >= 61"]
+requires = ["setuptools>=61.2"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "sphinxcontrib-domaintools"
+authors = [{name = "Kay-Uwe (Kiwi) Lorenz", email = "kiwi@franka.dyndns.org"}]
+maintainers = [{name = "Kaleb Barrett", email = "dev.ktbarrett@gmail.com"}]
+description = "Sphinx extension for easy domain creation."
+readme = "README.rst"
+license = "BSD-3-Clause"
+license-files = ["LICENSE.txt"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Documentation",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.9"
+dependencies = ["sphinx>=1.0"]
+dynamic = ["version"]
+
+[project.urls]
+Repository = "https://github.com/ktbarrett/domaintools.git"
+"Bug Reports" = "https://github.com/ktbarrett/domaintools/issues"
+
+[tool.setuptools.dynamic]
+version = {attr = "sphinxcontrib.domaintools._version.__version__"}
