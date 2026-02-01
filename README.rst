@@ -12,7 +12,7 @@ Installation
 
 ::
 
-    pip install sphinxcontrib-domaintools
+    pip install git+https://github.com/ktbarrett/domaintools.git
 
 
 Usage
